@@ -23,6 +23,9 @@ public://access specifier
 	void update();
 	void remove();
 	bool forgotPassword();
+	bool usernameExists(const std::string& username);
+	bool emailExists(const std::string& email);
+	bool phoneNoExists(const std::string& phoneNo);
 
 	//static std::vector<guest> findGuest(std::string firstName, std::string lastName, std::string email, std::string phoneNo, bool ascending);
 

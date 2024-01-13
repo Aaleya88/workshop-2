@@ -90,6 +90,33 @@ void guest::insert()
 	db.~DBConnection();
 }
 
+bool guest::usernameExists(const string& username) {
+	DBConnection db;
+	db.prepareStatement("SELECT * FROM guest WHERE username=?");
+	db.stmt->setString(1, username);
+	db.QueryResult();
+
+	return (db.res->rowsCount() > 0);
+}
+
+bool guest::emailExists(const std::string& email) {
+	DBConnection db;
+	db.prepareStatement("SELECT * FROM guest WHERE email=?");
+	db.stmt->setString(1, email);
+	db.QueryResult();
+
+	return (db.res->rowsCount() > 0);
+}
+
+bool guest::phoneNoExists(const std::string& phoneNo) {
+	DBConnection db;
+	db.prepareStatement("SELECT * FROM guest WHERE phoneNo=?");
+	db.stmt->setString(1, phoneNo);
+	db.QueryResult();
+
+	return (db.res->rowsCount() > 0);
+}
+
 void guest::update() 
 {
 	DBConnection db;

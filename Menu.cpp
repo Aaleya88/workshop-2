@@ -6,7 +6,7 @@ using namespace std;
 Menu::Menu() {
 	header = "";
 	footer = "\t\t\t\t\t\n\t\t\t\t\t---------------------\n\t\t\t\t\tSelect option";
-	bullet = "-";
+	bullet = " -> ";
 
 }
 int Menu::prompt() {
@@ -16,7 +16,7 @@ int Menu::prompt() {
 		system("cls"); // clear ur console
 		cout << header << endl;
 		for (int i = 0; i < options.size(); i++) {//loop trhough each option 
-			cout << "\t\t\t\t\t " << i + 1 << bullet << options[i].first;
+			cout << "\n\t\t\t\t\t " << bullet << options[i].first;
 			if (options[i].second != "") {
 				cout << " : " << options[i].second;
 			}
