@@ -27,16 +27,16 @@ string tmpInput;
 void guestRegister();
 void guestLoginMenu();
 void guestPage();
-void guestHome(guest user, booking buser, review reviews);
+void guestHome(guest user, booking buser, review reviews, payment payments);
 guest profile(guest user);
-void book(guest user, booking buser, review reviews);
+void book(guest user, booking buser, review reviews, payment payments);
 void reviewPage(guest user, review reviews);
 void writeReview(guest user, review reviews);
-void bookingMenu(guest user, booking buser, review reviews);
-void viewBooking();
-void contact(guest user, booking buser, review reviews);
-void guestForgotPassword(guest user, booking buser, review reviews);
-bool guestResetPassword(guest user, booking buser, review reviews);
+void bookingMenu(guest user, booking buser, review reviews, payment payments);
+void viewBooking(guest user);
+void contact(guest user, booking buser, review reviews, payment payments);
+void guestForgotPassword(guest user, booking buser, review reviews, payment payments);
+bool guestResetPassword(guest user, booking buser, review reviews, payment payments);
 
 void adminPage();
 void adminLoginMenu();
@@ -47,7 +47,7 @@ admin adminProfile(admin admins);
 void bookingManage(admin admins);
 void guestManage(admin admins);
 
-void homestayDetails(guest user, booking buser, review reviews);
+void homestayDetails(guest user, booking buser, review reviews, payment payments);
 
 void SaleReportMenu(admin admins);
 
@@ -824,6 +824,7 @@ void guestLoginMenu() {
 	guest user;
 	booking buser;
 	review reviews;
+	payment payments;
 
 	while (1) {
 		switch (loginMenu.prompt())
@@ -840,7 +841,7 @@ void guestLoginMenu() {
 			break;
 		case 3:
 			if (user.login()) {
-				guestHome(user, buser, reviews);
+				guestHome(user, buser, reviews, payments);
 			}
 			else {
 				cout << "\t\t\t\t\tInvalid Login";
@@ -848,7 +849,7 @@ void guestLoginMenu() {
 			}
 			break;
 		case 4:
-			guestForgotPassword(user, buser, reviews);
+			guestForgotPassword(user, buser, reviews, payments);
 		case 5:
 			guestPage();
 			break;
@@ -857,7 +858,7 @@ void guestLoginMenu() {
 }
 
 //GUEST FORGOT PASSWORD
-void guestForgotPassword(guest user, booking buser, review reviews)
+void guestForgotPassword(guest user, booking buser, review reviews, payment payments)
 {
 	Menu forgotPassword;
 	forgotPassword.header = "\n\n\t\t\t\t\t------ FORGOT PASSWORD -------\n\n\t\t\t\t\tChoose:\n";
@@ -886,7 +887,7 @@ void guestForgotPassword(guest user, booking buser, review reviews)
 		case 3:
 			if (user.forgotPassword()) 
 			{
-				guestResetPassword(user, buser, reviews);
+				guestResetPassword(user, buser, reviews, payments);
 			}
 			else 
 			{
@@ -902,7 +903,7 @@ void guestForgotPassword(guest user, booking buser, review reviews)
 }
 
 //GUEST RESET PASSWORD
-bool guestResetPassword(guest user, booking buser, review reviews)
+bool guestResetPassword(guest user, booking buser, review reviews, payment payments)
 {
 	guest temp = user; // copy the object
 	guest resetPassword;
@@ -948,7 +949,7 @@ bool guestResetPassword(guest user, booking buser, review reviews)
 			break;
 		case 3:
 			if (user.login()) {
-				guestHome(user, buser, reviews);
+				guestHome(user, buser, reviews, payments);
 				
 			}
 			else {
@@ -961,10 +962,10 @@ bool guestResetPassword(guest user, booking buser, review reviews)
 }
 
 //GUEST HOME
-void guestHome(guest user, booking buser, review reviews) {
+void guestHome(guest user, booking buser, review reviews, payment payments) {
 
 	Menu homeMenu;
-	homeMenu.header = "\n\t\t\t\t\t-------------- GUEST MENU --------------\n\n\t\t\t\t\t ------- Welcome " + user.username + " -------\n\n\t\t\t\t\tChoose:\n";
+	homeMenu.header = "\n\t\t\t\t\t-------------- GUEST MENU --------------\n\n\t\t\t\t\t ---------- Welcome " + user.username + " ----------\n\n\t\t\t\t\tChoose:\n";
 
 	homeMenu.addOption("Press 1 to View or Edit Profile");
 	homeMenu.addOption("Press 2 to go to Homestay Booking");
@@ -979,7 +980,7 @@ void guestHome(guest user, booking buser, review reviews) {
 			user = profile(user);
 			break;
 		case 2:
-			book(user, buser, reviews);
+			book(user, buser, reviews, payments);
 			break;
 		case 3:
 			reviewPage(user, reviews);
@@ -1101,7 +1102,7 @@ guest profile(guest user) {
 }
 
 //BOOK
-void book(guest user, booking buser, review reviews) {
+void book(guest user, booking buser, review reviews, payment payments) {
 
 	Menu bookMenu;
 
@@ -1117,21 +1118,21 @@ void book(guest user, booking buser, review reviews) {
 		switch (bookMenu.prompt())
 		{
 		case 1:
-			homestayDetails(user, buser, reviews);
+			homestayDetails(user, buser, reviews, payments);
 		case 2:
-			bookingMenu(user, buser, reviews); //
+			bookingMenu(user, buser, reviews, payments); //
 		case 3:
-			viewBooking();
+			viewBooking(user);
 		case 4:
-			contact(user, buser, reviews);
+			contact(user, buser, reviews, payments);
 		case 5:
-			guestHome(user, buser, reviews);
+			guestHome(user, buser, reviews, payments);
 		}
 	}
 }
 
 //HOMESTAY DETAILS
-void homestayDetails(guest user, booking buser, review reviews)
+void homestayDetails(guest user, booking buser, review reviews, payment payments)
 {
 	Menu homestayMenu;
 	homestayMenu.header = "\n\t\t\t\t\t-------------- HOMESTAY DETAILS --------------\n\n\t\t\t\t\t2 STORY BUNGALOW\n\n\t\t\t\t\tPrice: RM 580 per night\n\t\t\t\t\t * tax and charges is included\n"
@@ -1148,7 +1149,7 @@ void homestayDetails(guest user, booking buser, review reviews)
 		switch (homestayMenu.prompt())
 		{
 		case 1:
-			book(user, buser, reviews);
+			book(user, buser, reviews, payments);
 		case 2:
 			exit(0);
 		}
@@ -1156,10 +1157,12 @@ void homestayDetails(guest user, booking buser, review reviews)
 }
 
 //BOOKING PROCESS
-void bookingMenu(guest user, booking buser, review reviews)
+void bookingMenu(guest user, booking buser, review reviews, payment payments)
 {
 	booking temp = buser;
+	payment temps = payments;
 	temp.guestID = user.guestID;
+	temps.bookingID = buser.bookingID;
 	Menu makeBooking;
 	string tmpInput;
 
@@ -1191,7 +1194,6 @@ void bookingMenu(guest user, booking buser, review reviews)
 				}
 				makeBooking.setValue(0, temp.checkInDate);
 				break;*/
-
 
 				cout << "\t\t\t\t\tEnter Check-In Date (YYYY-MM-DD):";
 				cin.ignore();
@@ -1245,7 +1247,7 @@ void bookingMenu(guest user, booking buser, review reviews)
 
 					if (userInput == '0') {
 						cout << "\t\t\t\t\tBooking canceled.";
-						guestHome(user, buser, reviews);
+						guestHome(user, buser, reviews, payments);
 						return;
 					}
 				}
@@ -1265,15 +1267,49 @@ void bookingMenu(guest user, booking buser, review reviews)
 				break;  // Repeat the loop to allow the user to enter missing information
 			}
 
-			temp.totalPayment = temp.noOfNights * 750;
-			cout << "\t\t\t\t\tYour total payment is RM " << temp.totalPayment <<
+			//cout << "\t\t\t\t\tDo you want to confirm your booking? (y/n)";
+			//char confirm;
+			//confirm = _getch();
+			//if (confirm == 'Y' || confirm == 'y')
+			//{
+			//	temp = temp;
+			//	temp.insertBooking();
+			//	cout << "\n\t\t\t\t\tYour booking is added successfully !";
+			//	cout << "\n\t\t\t\t\tPress Enter to continue to payment process";  // Prompt for Enter key
+			//	_getch();
+			//	temps.totalPayment = temp.noOfNights * 750;
+			//	cout << "\t\t\t\t\tYour total payment is RM " << temps.totalPayment <<
+			//		"\n\t\t\t\t\tDo you want to continue make payment? (y/n)";
+			//	char confirm;
+			//	confirm = _getch();
+			//	if (confirm == 'Y' || confirm == 'y')
+			//	{
+			//		temps = temps;
+			//		temps.insertPayment();
+			//		cout << "\n\t\t\t\t\tYour payment is successful !";
+			//		cout << "\n\t\t\t\t\tPress Enter to continue...";  // Prompt for Enter key
+			//	}
+			//	else
+			//	{
+			//		cout << "Payment Cancelled.";
+			//	}
+			//}
+			//else
+			//{
+			//	cout << "Booking Cancelled.";
+			//}
+
+			temps.totalPayment = temp.noOfNights * 750;
+			cout << "\t\t\t\t\tYour total payment is RM " << temps.totalPayment <<
 				"\n\t\t\t\t\tDo you want to continue make payment? (y/n)";
 			char confirm;
 			confirm = _getch();
 			if (confirm == 'Y' || confirm == 'y')
 			{
 				temp = temp;
+				temps = temps;
 				temp.insertBooking();
+				temps.insertPayment();
 				cout << "\n\t\t\t\t\tYour payment is successful !";
 				cout << "\n\t\t\t\t\tPress Enter to continue...";  // Prompt for Enter key
 			}
@@ -1282,10 +1318,10 @@ void bookingMenu(guest user, booking buser, review reviews)
 				cout << "Payment Cancelled.";
 			}
 			_getch();
-			guestHome(user, buser, reviews);
+			guestHome(user, buser, reviews, payments);
 			break;
 		case 6:
-			book(user, buser, reviews);
+			book(user, buser, reviews, payments);
 			break;
 		case 7:
 			exit(0);
@@ -1312,11 +1348,13 @@ void bookingMenu(guest user, booking buser, review reviews)
 //}
 
 //VIEW BOOKING
-void viewBooking() //refer demo shop
+void viewBooking(guest user) //refer demo shop
 {
-	guest user;
+	//guest user;
 	review reviews;
+	payment payments;
 	vector<booking> buser;
+	//vector<payment> payments;
 	guest selHistory;
 	string displayBookHistory = "";
 
@@ -1356,8 +1394,7 @@ void viewBooking() //refer demo shop
 
 			for (int i = 0; i < buser.size(); i++) {
 				tmpHistory << "\t\t\t\t" << setw(10) << buser[i].bookingID << "|" << setw(20) << buser[i].checkInDate << "|" << setw(20) 
-				<< buser[i].checkOutDate << "|" << setw(15) << buser[i].noOfNights << "|" << setw(15) << buser[i].guestCount << "|" << setw(15) 
-				<< buser[i].totalPayment << "|" << setw(25) << buser[i].paymentDateTime << "|" << endl;
+				<< buser[i].checkOutDate << "|" << setw(15) << buser[i].noOfNights << "|" << setw(15) << buser[i].guestCount << "|" << endl;
 				tmpHistory << "\t\t\t\t_______________________________________________________________________________________________________________________________" << endl;
 			}
 
@@ -1391,18 +1428,19 @@ void viewBooking() //refer demo shop
 			ascending = !ascending;
 			break;
 		case 6:
-			buser = booking::bookingHistory(user.guestID, checkInDate, checkOutDate, noOfNights, guestCount, totalPayment, paymentDateTime, ascending);
+			buser = booking::bookingHistory(user.guestID, checkInDate, checkOutDate, noOfNights, guestCount, ascending);
+			//payments = payment::paymentHistory(totalPayment, paymentDateTime, ascending);
 			displayBookHistory = "";
 			break;
 		case 7:
 			booking buser;
-			return book(user, buser, reviews);
+			return book(user, buser, reviews, payments);
 		}
 	}
 }
 
 //ADMIN CONTACT DETAILS
-void contact(guest user, booking buser, review reviews)
+void contact(guest user, booking buser, review reviews, payment payments)
 {
 	Menu adminContact;
 
@@ -1417,7 +1455,7 @@ void contact(guest user, booking buser, review reviews)
 		switch (adminContact.prompt())
 		{
 		case 1:
-			book(user, buser, reviews);
+			book(user, buser, reviews, payments);
 			break;
 		case 2:
 			exit(0);

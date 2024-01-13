@@ -21,7 +21,7 @@ public:
 	void insertBooking();
 	void updateBooking();
 	void removeBooking();
-	int getGuestCount();
+	//int getGuestCount();
 
 	//void insertPayment();
 
@@ -32,7 +32,7 @@ public:
 	static booking findBooking(int bookingID);
 	static std::vector<booking> findBooking(std::string checkInDate, std::string checkOutDate, int noOfNights, int guestCount, bool ascending);
 
-	static std::vector<booking> bookingHistory(int guestID, std::string checkInDate, std::string checkOutDate, int noOfNights, int guestCount, double totalPayment, std::string paymentDateTime, bool ascending);
+	static std::vector<booking> bookingHistory(int guestID, std::string checkInDate, std::string checkOutDate, int noOfNights, int guestCount, bool ascending);
 
 };
 

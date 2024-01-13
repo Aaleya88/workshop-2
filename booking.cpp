@@ -14,9 +14,9 @@ booking::booking()
 	checkOutDate = "";
 	guestCount = 0;
 	noOfNights = 0;
-	totalPayment = 0;
-	paymentStatus = "";
-	paymentDateTime = "";
+	//totalPayment = 0;
+	//paymentStatus = "";
+	//paymentDateTime = "";
 }
 
 booking::booking(sql::ResultSet* data) 
@@ -27,22 +27,23 @@ booking::booking(sql::ResultSet* data)
 	checkOutDate = data->getString("checkOutDate");
 	guestCount = data->getInt("guestCount");
 	noOfNights = data->getInt("noOfNights");
-	totalPayment = data->getDouble("totalPayment");
-	paymentStatus = data->getString("paymentStatus");
-	paymentDateTime = data->getString("paymentDateTime");
+	//totalPayment = data->getDouble("totalPayment");
+	//paymentStatus = data->getString("paymentStatus");
+	//paymentDateTime = data->getString("paymentDateTime");
 }
 
 void booking::insertBooking()
 {
 	DBConnection db;//instantiate
-	db.prepareStatement("Insert into booking (guestID, checkInDate, checkOutDate, noOfNights, guestCount, totalPayment) VALUES (?,?,?,?,?,?)"); //address, city, state
+	db.prepareStatement("Insert into booking (guestID, checkInDate, checkOutDate, noOfNights, guestCount) VALUES (?,?,?,?,?)"); //address, city, state
 	db.stmt->setInt(1, guestID);
 	db.stmt->setString(2, checkInDate);
 	db.stmt->setString(3, checkOutDate);
 	db.stmt->setInt(4, noOfNights);
 	db.stmt->setInt(5, guestCount); 
-	db.stmt->setDouble(6, totalPayment);
+	//db.stmt->setDouble(6, totalPayment);
 	db.QueryStatement();
+    bookingID = db.getGeneratedId();
 	db.~DBConnection();
 }
 
@@ -133,7 +134,7 @@ vector<booking> booking::findBooking(string checkInDate, string checkOutDate, in
 }
 
 
-vector<booking> booking::bookingHistory(int guestID, string checkInDate, string checkOutDate, int noOfNights, int guestCount, double totalPayment, string paymentDateTime, bool ascending)
+vector<booking> booking::bookingHistory(int guestID, string checkInDate, string checkOutDate, int noOfNights, int guestCount, bool ascending)
 {
     string query = "SELECT * FROM booking WHERE guestID = ?";
 
