@@ -14,6 +14,8 @@ public:
 	std::string checkInDate, checkOutDate, paymentStatus, paymentDateTime;
 
 	booking();
+	booking(int bookingID, int guestID, std::string checkInDate, std::string checkOutDate, std::string noOfNights, std::string guestCount); //std::string address, std::string city, std::string state
+
 	booking(sql::ResultSet* data);
 
 	//void setGuestID(int guestID);
@@ -29,7 +31,7 @@ public:
 
 	~booking();
 
-	static booking findBooking(int bookingID);
+	static booking selectBooking(int bookingID);
 	static std::vector<booking> findBooking(std::string checkInDate, std::string checkOutDate, int noOfNights, int guestCount, bool ascending);
 
 	static std::vector<booking> bookingHistory(int guestID, std::string checkInDate, std::string checkOutDate, int noOfNights, int guestCount, bool ascending);

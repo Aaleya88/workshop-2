@@ -4,7 +4,6 @@
 
 #include <string>
 #include <vector>
-#include <string>
 #include "DBConnection.h"
 
 class guest

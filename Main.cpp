@@ -18,12 +18,12 @@
 #include "review.h"
 //#include "guest.cpp"
 
-
 using namespace std;
 using namespace std::chrono;
 
 string tmpInput;
 
+//GUEST USER
 void guestRegister();
 void guestLoginMenu();
 void guestPage();
@@ -38,8 +38,9 @@ void viewBooking(guest user, booking bookings);
 void contact(guest user, booking buser, review reviews, payment payments, booking bookings);
 void guestForgotPassword(guest user, booking buser, review reviews, payment payments, booking bookings);
 bool guestResetPassword(guest user, booking buser, review reviews, payment payments, booking bookings);
+void homestayDetails(guest user, booking buser, review reviews, payment payments, booking bookings);
 
-
+//ADMIN USER
 void adminPage();
 void adminLoginMenu();
 void adminForgotPassword();
@@ -48,14 +49,12 @@ void adminhome(admin admins);
 admin adminProfile(admin admins);
 void bookingManage(admin admins);
 void guestManage(admin admins);
-
-void homestayDetails(guest user, booking buser, review reviews, payment payments, booking bookings);
-
 void SaleReportMenu(admin admins);
 
 //utility functions
 bool isNumeric(string input);
 
+//VALID DATE FORMAT
 bool validateDate(const std::string& date);
 //double calculateNumNights(const string& checkInDate, const string& checkOutDate);
 
@@ -272,7 +271,7 @@ void adminhome(admin admins)
 	homeAdmin.addOption("Press 3 to Manage Guest");
 	homeAdmin.addOption("Press 4 to View Sale Report");
 	homeAdmin.addOption("Press 5 to Logout");
-	homeAdmin.footer = "\n\t\t\t\t\t----------------------------------\n\t\t\t\t\tSelect Option\n";
+	homeAdmin.footer = "\n\t\t\t\t\t--------------------------------------\n\t\t\t\t\tSelect Option\n";
 
 	while (1) 
 	{
@@ -344,7 +343,7 @@ admin adminProfile(admin admins)
 			cin >> temp.adminPassword;
 			break;
 		case 4:
-			cout << "\t\t\t\t\tInsert Phone No: ";
+			cout << "\t\t\t\t\tInsert Phone No (example: 01xxxxxxxxx): ";
 			cin >> temp.adminPhoneNo;
 			break;
 		case 5:
@@ -391,7 +390,7 @@ void bookingManage(admin admins)
 	bool ascending = true;
 
 	Menu bookingManage;
-	bookingManage.header = "\n\n\t\t\t\t\t-------------- BOOKING MANAGE --------------\n\n\t\t\t\t\tSearch for guest: ";
+	bookingManage.header = "\n\n\t\t\t\t\t--------------- BOOKING MANAGE ---------------\n\n\t\t\t\t\tSearch for booking: ";
 	bookingManage.addOption("Press 1 to Check-In Date");
 	bookingManage.addOption("Press 2 to Check-Out Date");
 	bookingManage.addOption("Press 3 to No of Nights");
@@ -399,7 +398,7 @@ void bookingManage(admin admins)
 	bookingManage.addOption("Press 5 to Select Ordering");
 	bookingManage.addOption("Press 6 to View Booking List");
 	bookingManage.addOption("Press 7 to Back to profile");
-	bookingManage.footer = "\n\t\t\t\t\t-----------------------------------------------\n\t\t\t\t\tSelect Option\n";
+	bookingManage.footer = "\n\t\t\t\t\t------------------------------------------------\n\t\t\t\t\tSelect Option\n";
 
 	while (1)
 	{
@@ -414,17 +413,16 @@ void bookingManage(admin admins)
 			displayBooking = "\n\t\t\t\tSearch Result:\n";
 			stringstream tmpBooking;
 			tmpBooking << setw(4) << "\t\t\t\tBooking ID" << "|" << setw(15) << "Guest ID"
-				<< "|" << setw(20) << "Check In Date" << "|" << setw(20) << "Check-Out Date" << "|" << setw(15) << "No of Nights" << "|" 
-				<< setw(15) << "Guest Count" << "|" << endl;
+				<< "|" << setw(20) << "Check In Date" << "|" << setw(20) << "Check-Out Date" << "|" 
+				<< setw(15) << "No of Nights" << "|" << setw(15) << "Guest Count" << "|" << endl;
 			tmpBooking << "\t\t\t\t-----------------------------------------------------------------------------------------------------" << endl;
 			 
 			for (int i = 0; i < buser.size(); i++) {
 				tmpBooking << "\t\t\t\t" << setw(8) << buser[i].bookingID << "|" << setw(20) << buser[i].guestID
-					<< "|" << setw(20) << buser[i].checkInDate << "|" << setw(20) << buser[i].checkOutDate << "|" << setw(15) << buser[i].noOfNights << "|" 
-					<< setw(15) << buser[i].guestCount << "|" << endl;
+					<< "|" << setw(20) << buser[i].checkInDate << "|" << setw(20) << buser[i].checkOutDate << "|" 
+					<< setw(15) << buser[i].noOfNights << "|" << setw(15) << buser[i].guestCount << "|" << endl;
 				tmpBooking << "\t\t\t\t________________________________________________________________________________________________________________" << endl;
 			}
-
 			displayBooking += tmpBooking.str();
 		}
 		bookingManage.footer = displayBooking;
@@ -554,8 +552,6 @@ void SaleReportMenu(admin admins) {
 	
 	string start, endDate;
 
-	vector<int> categoryIds;
-
 	bool sortByDate = true, ascending = true;
 
 	Menu saleMenu;
@@ -570,19 +566,16 @@ void SaleReportMenu(admin admins) {
 
 	vector<Sale> result; // vector to store the result
 
-	string selectedCategoryName;
-	int tmpSelectedCategory;
-
 	vector<int>::iterator iterator; //iterator is declare using what we are iterating, in this case it is vector of integer
 
 	while (1)
 	{
 		stringstream ss;
 		// construct our report header
-		ss << endl << "\n\n\t\t\t\t\t--------------- SALES REPORT -------------- \n" << endl 
-			<< "\t\t\t\t\t____________________________________________" << endl << "\t\t\t\t\t|" << setw(20) << "Date" << "|";
+		ss << endl << "\n\t\t\t\t\t--------------- SALES REPORT -------------- \n" << endl 
+			<< "\t\t\t\t\t+---------------------+--------------------+" << endl << "\t\t\t\t\t|" << setw(20) << "Date" << " |";
 
-		ss << setw(20) << "Sale" << "|";
+		ss << setw(20) << "Sale" << "|" << endl << "\t\t\t\t\t|---------------------+--------------------|";
 
 		double totalSale = 0;
 		// repeat same structure for content of the report
@@ -595,9 +588,9 @@ void SaleReportMenu(admin admins) {
 
 		}
 
-		ss << endl << "\t\t\t\t\t| " << setw(20) << "Total Sale" << " | ";
+		ss << endl << "\t\t\t\t\t|" << setw(20) << "Total Sale" << " | ";
 	
-		ss << setw(20) << totalSale << "|" << endl << "\t\t\t\t\t------------------------------------------------";
+		ss << setw(19) << totalSale << "|" << endl << "\t\t\t\t\t+---------------------+--------------------+";
 
 		ss << endl << "\n\t\t\t\t\t-------------- END OF REPORT --------------" << endl;
 		saleMenu.header = ss.str();
@@ -1063,7 +1056,7 @@ guest profile(guest user) {
 	}
 }
 
-//BOOK
+//HOMESTAY MENU
 void book(guest user, booking buser, review reviews, payment payments, booking bookings) {
 
 	Menu bookMenu;
@@ -1104,7 +1097,7 @@ void homestayDetails(guest user, booking buser, review reviews, payment payments
 
 	homestayMenu.addOption("Press 1 to Back");
 	homestayMenu.addOption("Press 2 to Exit");
-	homestayMenu.footer = "\n\t\t\t\t\t----------------------------------------\n\t\t\t\t\tSelect Option\n";
+	homestayMenu.footer = "\n\t\t\t\t\t----------------------------------------------\n\t\t\t\t\tSelect Option\n";
 	
 	while (1) {
 
@@ -1456,6 +1449,7 @@ void writeReview(guest user, review reviews)
 	}
 }
 
+//HOMESTAY REVIEWS
 void homestayReviews(guest user)
 {
 	vector<review> reviews;
@@ -1522,6 +1516,7 @@ void homestayReviews(guest user)
 		}
 	}
 }
+
 
 bool isNumeric(string input) {
 	for (int i = 0; i < input.length(); i++) {
