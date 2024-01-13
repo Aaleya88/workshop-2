@@ -5,7 +5,7 @@ using namespace std;
 
 Menu::Menu() {
 	header = "";
-	footer = "\t\t\t\t\t\n\t\t\t\t\t---------------------\n\t\t\t\t\tSelect option";
+	footer = "\t\t\t\t\t\n\t\t\t\t\t-------------------------------------\n\t\t\t\t\tSelect option";
 	bullet = " -> ";
 
 }

@@ -14,9 +14,6 @@ booking::booking()
 	checkOutDate = "";
 	guestCount = 0;
 	noOfNights = 0;
-	//totalPayment = 0;
-	//paymentStatus = "";
-	//paymentDateTime = "";
 }
 
 booking::booking(sql::ResultSet* data) 
@@ -27,9 +24,6 @@ booking::booking(sql::ResultSet* data)
 	checkOutDate = data->getString("checkOutDate");
 	guestCount = data->getInt("guestCount");
 	noOfNights = data->getInt("noOfNights");
-	//totalPayment = data->getDouble("totalPayment");
-	//paymentStatus = data->getString("paymentStatus");
-	//paymentDateTime = data->getString("paymentDateTime");
 }
 
 void booking::insertBooking()
@@ -41,7 +35,6 @@ void booking::insertBooking()
 	db.stmt->setString(3, checkOutDate);
 	db.stmt->setInt(4, noOfNights);
 	db.stmt->setInt(5, guestCount); 
-	//db.stmt->setDouble(6, totalPayment);
 	db.QueryStatement();
     bookingID = db.getGeneratedId();
 	db.~DBConnection();
@@ -55,7 +48,6 @@ void booking::updateBooking()
 	db.stmt->setString(2, checkOutDate);
 	db.stmt->setInt(3, guestCount);
 	db.stmt->setInt(4, noOfNights);
-	//db.stmt->setString(4, paymentDateTime);
 	db.stmt->setInt(5, bookingID);
 	db.QueryStatement();
 	db.~DBConnection();
@@ -63,41 +55,28 @@ void booking::updateBooking()
 
 void booking::removeBooking() {
 	DBConnection db;
-	db.prepareStatement("DELETE FROM booking WHERE bookingID=?");
+	db.prepareStatement("DELETE FROM booking WHERE bookingID=? AND guestID=?");
 	db.stmt->setInt(1, bookingID);
+    db.stmt->setInt(2, guestID);
 	db.QueryStatement();
 	db.~DBConnection();
 }
 
+//bool booking::checkInDateExist(const std::string & phoneNo) {
+ //    DBConnection db;
+ //    db.prepareStatement("SELECT * FROM guest WHERE phoneNo=?");
+ //    db.stmt->setString(1, phoneNo);
+ //    db.QueryResult();
+
+ //    return (db.res->rowsCount() > 0);
+ //}
+
 vector<booking> booking::findBooking(string checkInDate, string checkOutDate, int noOfNights, int guestCount, bool ascending)
 {
-    string query = "SELECT * FROM booking WHERE guestID != 0";
 
-    // Check if any other conditions are provided
-    if (!checkInDate.empty() || !checkOutDate.empty() || noOfNights != 0 || guestCount != 0)
-    {
-        query += " AND";
-
-        if (!checkInDate.empty())
-            query += " checkInDate LIKE ?";
-        if (!checkOutDate.empty())
-        {
-            if (!checkInDate.empty()) query += " AND";
-            query += " checkOutDate LIKE ?";
-        }
-        if (noOfNights != 0)
-        {
-            if (!checkInDate.empty() || !checkOutDate.empty()) query += " AND";
-            query += " noOfNights LIKE ?";
-        }
-        if (guestCount != 0)
-        {
-            if (!checkInDate.empty() || !checkOutDate.empty() || noOfNights != 0) query += " AND";
-            query += " guestCount LIKE ?";
-        }
-    }
-
-    query += " ORDER BY noOfNights ";
+    string query = "SELECT * FROM booking WHERE "
+        " checkInDate LIKE ? AND checkOutDate LIKE ? AND noOfNights LIKE ? AND guestCount LIKE ? "
+        " ORDER BY guestCount ";
 
     if (ascending)
     {
@@ -110,12 +89,10 @@ vector<booking> booking::findBooking(string checkInDate, string checkOutDate, in
 
     DBConnection db;
     db.prepareStatement(query);
-
-    int parameterIndex = 1;
-    if (!checkInDate.empty()) db.stmt->setString(parameterIndex++, "%" + checkInDate + "%");
-    if (!checkOutDate.empty()) db.stmt->setString(parameterIndex++, "%" + checkOutDate + "%");
-    if (noOfNights != 0) db.stmt->setInt(parameterIndex++, noOfNights);
-    if (guestCount != 0) db.stmt->setInt(parameterIndex++, guestCount);
+    db.stmt->setString(1, "%" + checkInDate + "%");
+    db.stmt->setString(2, "%" + checkOutDate + "%");
+    db.stmt->setInt(3, noOfNights);
+    db.stmt->setInt(4, guestCount);
 
     vector<booking> buser;
 
@@ -125,12 +102,77 @@ vector<booking> booking::findBooking(string checkInDate, string checkOutDate, in
     {
         while (db.res->next())
         {
-            booking tmpGuest(db.res);
-            buser.push_back(tmpGuest);
+            booking tmpBooking(db.res);
+            buser.push_back(tmpBooking);
+
         }
         db.~DBConnection();
         return buser;
     }
+
+
+
+
+    //string query = "SELECT * FROM booking WHERE guestID != 0";
+
+    //// Check if any other conditions are provided
+    //if (!checkInDate.empty() || !checkOutDate.empty() || noOfNights != 0 || guestCount != 0)
+    //{
+    //    query += " AND";
+
+    //    if (!checkInDate.empty())
+    //        query += " checkInDate LIKE ?";
+    //    if (!checkOutDate.empty())
+    //    {
+    //        if (!checkInDate.empty()) query += " AND";
+    //        query += " checkOutDate LIKE ?";
+    //    }
+    //    if (noOfNights != 0)
+    //    {
+    //        if (!checkInDate.empty() || !checkOutDate.empty()) query += " AND";
+    //        query += " noOfNights LIKE ?";
+    //    }
+    //    if (guestCount != 0)
+    //    {
+    //        if (!checkInDate.empty() || !checkOutDate.empty() || noOfNights != 0) query += " AND";
+    //        query += " guestCount LIKE ?";
+    //    }
+    //}
+
+    //query += " ORDER BY noOfNights ";
+
+    //if (ascending)
+    //{
+    //    query += "ASC";
+    //}
+    //else
+    //{
+    //    query += "DESC";
+    //}
+
+    //DBConnection db;
+    //db.prepareStatement(query);
+
+    //int parameterIndex = 1;
+    //if (!checkInDate.empty()) db.stmt->setString(parameterIndex++, "%" + checkInDate + "%");
+    //if (!checkOutDate.empty()) db.stmt->setString(parameterIndex++, "%" + checkOutDate + "%");
+    //if (noOfNights != 0) db.stmt->setInt(parameterIndex++, noOfNights);
+    //if (guestCount != 0) db.stmt->setInt(parameterIndex++, guestCount);
+
+    //vector<booking> buser;
+
+    //db.QueryResult();
+
+    //if (db.res->rowsCount() > 0)
+    //{
+    //    while (db.res->next())
+    //    {
+    //        booking tmpGuest(db.res);
+    //        buser.push_back(tmpGuest);
+    //    }
+    //    db.~DBConnection();
+    //    return buser;
+    //}
 }
 
 
@@ -199,79 +241,6 @@ vector<booking> booking::bookingHistory(int guestID, string checkInDate, string 
         db.~DBConnection();
         return buser;
     }
-
-    //bool booking::checkInDateExist(const std::string & phoneNo) {
-    //    DBConnection db;
-    //    db.prepareStatement("SELECT * FROM guest WHERE phoneNo=?");
-    //    db.stmt->setString(1, phoneNo);
-    //    db.QueryResult();
-
-    //    return (db.res->rowsCount() > 0);
-    //}
-
-
-    //string query = "SELECT * FROM booking WHERE guestID = ? ";
-
-    //// Check if any other conditions are provided
-    //if (!checkInDate.empty() || !checkOutDate.empty() || noOfNights != 0 || guestCount != 0)
-    //{
-    //    query += " AND";
-
-    //    if (!checkInDate.empty())
-    //        query += " checkInDate LIKE ?";
-    //    if (!checkOutDate.empty())
-    //    {
-    //        if (!checkInDate.empty()) query += " AND";
-    //        query += " checkOutDate LIKE ?";
-    //    }
-    //    if (noOfNights != 0)
-    //    {
-    //        if (!checkInDate.empty() || !checkOutDate.empty()) query += " AND";
-    //        query += " noOfNights LIKE ?";
-    //    }
-    //    if (guestCount != 0)
-    //    {
-    //        if (!checkInDate.empty() || !checkOutDate.empty() || noOfNights != 0) query += " AND";
-    //        query += " guestCount LIKE ?";
-    //    }
-    //}
-
-    //query += " ORDER BY noOfNights ";
-
-    //if (ascending)
-    //{
-    //    query += "ASC";
-    //}
-    //else
-    //{
-    //    query += "DESC";
-    //}
-
-    //DBConnection db;
-    //db.prepareStatement(query);
-
-    //db.stmt->setInt(1, guestID);
-
-    //int parameterIndex = 1;
-    //if (!checkInDate.empty()) db.stmt->setString(parameterIndex++, "%" + checkInDate + "%");
-    //if (!checkOutDate.empty()) db.stmt->setString(parameterIndex++, "%" + checkOutDate + "%");
-    //if (noOfNights != 0) db.stmt->setInt(parameterIndex++, noOfNights);
-    //if (guestCount != 0) db.stmt->setInt(parameterIndex++, guestCount);
-
-    //vector<booking> buser;
-
-    //db.QueryResult();
-
-    //if (db.res->rowsCount() > 0)
-    //{
-    //    while (db.res->next())
-    //    {
-    //        booking tmpHistory(db.res);
-    //        buser.push_back(tmpHistory);
-    //    }
-    //    db.~DBConnection();
-    //    return buser;
-    //}
 }
 
 

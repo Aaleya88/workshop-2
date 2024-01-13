@@ -31,7 +31,6 @@ void payment::insertPayment()
 	db.stmt->setInt(1, bookingID);
 	db.stmt->setInt(2, totalPayment);
 	db.QueryStatement();
-	//bookingID = db.getGeneratedId();
 	db.~DBConnection();
 }
 
