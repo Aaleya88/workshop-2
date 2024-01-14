@@ -73,9 +73,9 @@ void booking::removeBooking() {
 
 vector<booking> booking::findBooking(string checkInDate, string checkOutDate, int noOfNights, int guestCount, bool ascending)
 {
-    string query = "SELECT * FROM booking WHERE guestID != 0"
+    string query = "SELECT * FROM booking WHERE guestID != 0 AND"
     " checkInDate LIKE ? AND checkOutDate LIKE ? AND noOfNights LIKE ? AND guestCount LIKE ? "
-        " ORDER BY noOfNights ";
+    " ORDER BY noOfNights ";
 
     // Check if any other conditions are provided
   /*  if (!checkInDate.empty() || !checkOutDate.empty() || noOfNights != 0 || guestCount != 0)

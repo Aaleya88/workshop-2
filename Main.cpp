@@ -453,7 +453,7 @@ void bookingManage(admin admins)
 			ascending = !ascending;
 			break;
 		case 6:
-			buser = booking::findBooking("", "", 0, 0, ascending);
+			buser = booking::findBooking(checkInDate, checkOutDate, noOfNights, guestCount, ascending);
 			displayBooking = "";
 			break;
 		case 7:
