@@ -55,9 +55,9 @@ void booking::updateBooking()
 
 void booking::removeBooking() {
 	DBConnection db;
-	db.prepareStatement("DELETE FROM booking WHERE bookingID=? AND guestID=?");
+	db.prepareStatement("DELETE FROM booking WHERE bookingID=?");
 	db.stmt->setInt(1, bookingID);
-    db.stmt->setInt(2, guestID);
+    //db.stmt->setInt(2, guestID);
 	db.QueryStatement();
 	db.~DBConnection();
 }

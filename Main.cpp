@@ -44,12 +44,15 @@ void homestayDetails(guest user, booking buser, review reviews, payment payments
 void adminPage();
 void adminLoginMenu();
 void adminForgotPassword();
-bool adminResetPassword(admin admins);
-void adminhome(admin admins);
-admin adminProfile(admin admins);
-void bookingManage(admin admins);
-void guestManage(admin admins);
+bool adminResetPassword(admin admins, review reviews);
+void adminhome(admin admins, review reviews);
+admin adminProfile(admin admins, review reviews);
+void bookingManage(admin admins, review reviews);
+void guestManage(admin admins, review reviews);
 void SaleReportMenu(admin admins);
+void reviewList(admin admins, review reviews);
+void manageReviews(admin admins);
+
 
 //utility functions
 bool isNumeric(string input);
@@ -123,6 +126,7 @@ void adminLoginMenu()
 	adminLoginMenu.footer = "\n\t\t\t\t\t-------------------------------------\n\t\t\t\t\tSelect Option\n\t\t\t\t\t";
 
 	admin admins;
+	review reviews;
 
 	while (1) {
 		switch (adminLoginMenu.prompt())
@@ -139,7 +143,7 @@ void adminLoginMenu()
 			break;
 		case 3:
 			if (admins.login()) {
-				adminhome(admins);
+				adminhome(admins, reviews);
 			}
 			else {
 				cout << "\t\t\t\t\tInvalid Login";
@@ -187,7 +191,7 @@ void adminForgotPassword()
 			break;
 		case 3:
 			if (admins.adminForgotPassword()) {
-				adminResetPassword(admins);
+				adminResetPassword(admins, reviews);
 			}
 			else {
 				cout << "\t\t\t\t\tInvalid username or answer!";
@@ -202,7 +206,7 @@ void adminForgotPassword()
 }
 
 //ADMIN RESET PASSWORD
-bool adminResetPassword(admin admins)
+bool adminResetPassword(admin admins, review reviews)
 {
 	admin temp = admins; // copy the object
 	admin adminResetPassword;
@@ -248,7 +252,7 @@ bool adminResetPassword(admin admins)
 			break;
 		case 3:
 			if (admins.login()) {
-				adminhome(admins);
+				adminhome(admins, reviews);
 
 			}
 			else {
@@ -261,7 +265,7 @@ bool adminResetPassword(admin admins)
 }
 
 //ADMIN HOME
-void adminhome(admin admins)
+void adminhome(admin admins, review reviews)
 {
 	guest user;
 	Menu homeAdmin;
@@ -269,8 +273,9 @@ void adminhome(admin admins)
 	homeAdmin.addOption("Press 1 to View Profile");
 	homeAdmin.addOption("Press 2 to Manage Booking"); 
 	homeAdmin.addOption("Press 3 to Manage Guest");
-	homeAdmin.addOption("Press 4 to View Sale Report");
-	homeAdmin.addOption("Press 5 to Logout");
+	homeAdmin.addOption("Press 4 to View Guest Review");
+	homeAdmin.addOption("Press 5 to View Sale Report");
+	homeAdmin.addOption("Press 6 to Logout");
 	homeAdmin.footer = "\n\t\t\t\t\t--------------------------------------\n\t\t\t\t\tSelect Option\n";
 
 	while (1) 
@@ -278,16 +283,18 @@ void adminhome(admin admins)
 		switch (homeAdmin.prompt())
 		{
 		case 1:
-			admins = adminProfile(admins);
+			admins = adminProfile(admins, reviews);
 		case 2:
-			bookingManage(admins);
+			bookingManage(admins, reviews);
 			break;
 		case 3:
-			guestManage(admins);
+			guestManage(admins, reviews);
 		case 4:
+			reviewList(admins, reviews);
+		case 5:
 			SaleReportMenu(admins);
 			break;
-		case 5:
+		case 6:
 			adminLoginMenu();
 			return;
 			break;
@@ -298,7 +305,7 @@ void adminhome(admin admins)
 }
 
 //ADMIN PROFILE
-admin adminProfile(admin admins)
+admin adminProfile(admin admins, review reviews)
 {
 	admin temp = admins; // copy the object
 
@@ -359,7 +366,7 @@ admin adminProfile(admin admins)
 			cout << "\t\t\t\t\tUpdated";
 			_getch();
 		case 8:
-			adminhome(admins);
+			adminhome(admins, reviews);
 			break;
 		case 9:
 			cout << "\t\t\t\t\tDelete your account? (y/n)";
@@ -378,7 +385,7 @@ admin adminProfile(admin admins)
 }
 
 //ADMIN BOOKING MANAGE
-void bookingManage(admin admins)
+void bookingManage(admin admins, review reviews)
 {
 	vector<booking> buser;
 	booking selBooking;
@@ -457,13 +464,13 @@ void bookingManage(admin admins)
 			displayBooking = "";
 			break;
 		case 7:
-			adminhome(admins);
+			adminhome(admins, reviews);
 		}
 	}
 }
 
 //ADMIN GUEST MANAGE
-void guestManage(admin admins)
+void guestManage(admin admins, review reviews)
 {
 	vector<guest> user;
 	guest selGuest;
@@ -542,10 +549,100 @@ void guestManage(admin admins)
 		    displayGuest = "";
 		    break;
 		case 7:
-			adminhome(admins); 
+			adminhome(admins, reviews); 
 	    }
 	}
 }
+
+void reviewList(admin admins, review reviews)
+{
+	review temp = reviews;
+	Menu adminReviewMenu;
+
+	adminReviewMenu.header = "\t\t\t\t\t----------- REVIEW MENU -----------\n\n\t\t\t\t\tChoose:";
+	adminReviewMenu.addOption("Press 1 to View Guest Reviews");
+	adminReviewMenu.addOption("Press 2 to Go Back to Menu");
+	adminReviewMenu.footer = "\n\t\t\t\t\t-----------------------------------\n\t\t\t\t\tSelect Option\n";
+
+	while (1) {
+
+		switch (adminReviewMenu.prompt())
+		{
+		case 1:
+			manageReviews(admins);
+			break;
+		case 2:
+			return;
+			break;
+		}
+	}
+}
+
+//ADMIN MANAGE REVIEWS
+void manageReviews(admin admins)
+{
+	vector<review> reviews;
+	review selReview;
+	string displayReview = "";
+
+	int guestID = 0, rating = 0;
+	string comment = "", reviewDate = "";
+	bool ascending = true;
+
+	Menu manageReview;
+	manageReview.header = "\n\n\t\t\t\t\t------ HOMESTAY REVIEWS -------\n\n\t\t\t\t\tSearch for review: ";
+	manageReview.addOption("Press 1 to View Homestay Reviews");
+	manageReview.addOption("Press 2 to Select Ordering");
+	manageReview.addOption("Press 3 to Back to Review Menu");
+	manageReview.addOption("Press 4 to Exit the Program");
+	manageReview.footer = "\n\t\t\t\t\t--------------\n\t\t\t\t\tSelect Option\n";
+
+	while (1)
+	{
+		if (ascending) {
+			manageReview.setValue(1, "Ascending");
+		}
+		else {
+			manageReview.setValue(1, "Descending");
+		}
+
+		if (displayReview == "") {
+			displayReview = "\n\t\t\t\tResult:\n";
+			stringstream tmpReview;
+			tmpReview << "\n\t\t+---------------------------------------------------------------------------------------------------------+" << endl;
+			tmpReview << setw(5) << "\t\t| Review ID" << "|" << setw(15) << "Guest ID"
+				<< "|" << setw(15) << "Ratings" << "|" << setw(40) << "Comments" << "|" << setw(20) << "Review Date" << " |" << endl;
+			tmpReview << "\t\t+---------------------------------------------------------------------------------------------------------+" << endl;
+
+
+			for (int i = 0; i < reviews.size(); i++) {
+				tmpReview << "\t\t|" << setw(10) << reviews[i].reviewID << "|" << setw(15) << reviews[i].guestID
+					<< "|" << setw(15) << reviews[i].rating << "|" << setw(40) << reviews[i].comment << "|" << setw(20) << reviews[i].reviewDate << " |" << endl;
+				tmpReview << "\t\t+_________________________________________________________________________________________________________+" << endl;
+			}
+
+			displayReview += tmpReview.str();
+		}
+		manageReview.footer = displayReview;
+
+
+		switch (manageReview.prompt())
+		{
+		case 1:
+			reviews = review::findReview(rating, comment, ascending);
+			displayReview = "";
+			break;
+		case 2:
+			ascending = !ascending;
+			break;
+		case 3:
+			return;
+		case 4:
+			exit(0);
+		}
+	}
+}
+
 
 //ADMIN VEIW SALE REPORT
 void SaleReportMenu(admin admins) {
@@ -1019,11 +1116,11 @@ guest profile(guest user) {
 				cout << "\n\t\t\t\t\tInsert different phone no: ";
 				getline(cin, temp.phoneNo);
 			}
-			else {
-				// If validation fails, revert to the original number
-				temp.phoneNo = previousPhoneNo;
-				cout << "\t\t\t\t\tPhone number remains unchanged." << endl;
-			}
+			//else {
+			//	// If validation fails, revert to the original number
+			//	temp.phoneNo = previousPhoneNo;
+			//	cout << "\t\t\t\t\tPhone number remains unchanged." << endl;
+			//}
 			break;
 		case 5:
 			cout << "\t\t\t\t\tInsert Answer for Security Question: \n\t\t\t\t\tIn what city were you born?: ";
@@ -1067,6 +1164,7 @@ void book(guest user, booking buser, review reviews, payment payments, booking b
 	bookMenu.addOption("Press 3 to View Booking History");
 	bookMenu.addOption("Press 4 to View Admin Contact Information");
 	bookMenu.addOption("Press 5 to Back");
+	bookMenu.addOption("Press 6 to Exit");
 	bookMenu.footer = "\n\t\t\t\t\t-------------------------------------------------------\n\t\t\t\t\tSelect Option\n";
 
 	while (1) {
@@ -1082,6 +1180,8 @@ void book(guest user, booking buser, review reviews, payment payments, booking b
 			contact(user, buser, reviews, payments, bookings);
 		case 5:
 			guestHome(user, buser, reviews, payments, bookings);
+		case 6:
+			exit(0);
 		}
 	}
 }
@@ -1090,10 +1190,10 @@ void book(guest user, booking buser, review reviews, payment payments, booking b
 void homestayDetails(guest user, booking buser, review reviews, payment payments, booking bookings)
 {
 	Menu homestayMenu;
-	homestayMenu.header = "\n\t\t\t\t\t-------------- HOMESTAY DETAILS --------------\n\n\t\t\t\t\t2 STORY BUNGALOW\n\n\t\t\t\t\tPrice: RM 580 per night\n\t\t\t\t\t * tax and charges is included\n"
+	homestayMenu.header = "\n\t\t\t\t\t-------------- HOMESTAY DETAILS --------------\n\n\t\t\t\t\t2 STORY BUNGALOW\n\n\t\t\t\t\tPrice: RM 750 per night\n\t\t\t\t\t * tax and charges is included\n"
 		"\n\t\t\t\t\t- 4 Bedrooms\n\n\t\t\t\t\t Master bedroom with balcony:\n\t\t\t\t\t- 1 King bed\n\t\t\t\t\t- Toilet with bath tub\n\t\t\t\t\t - Air-conditioning\n\t\t\t\t\t- Wardrobe\n\t\t\t\t\t"
 		"\n\t\t\t\t\t3 Bedrooms:\n\t\t\t\t\t- 1 Queen bed\n\t\t\t\t\t- Wardrobes\n\t\t\t\t\t- Air-conditioning\n\n\t\t\t\t\t- 3 Toilets\n\t\t\t\t\t- Kitchen\n\t\t\t\t\t- Washer\n\t\t\t\t\t- Living room with sofa\n\t\t\t\t\t"
-		"- Dining table\n\t\t\t\t\t- Parking\n\t\t\t\t\t- Free Wi-Fi\n\t\t\t\t\t- Tv\n\t\t\t\t\t- Swimming pool\n\n\t\t\t\t\t*Pets are not allowed.\n\n\t\t\t\t\tChoose:";
+		"- Dining table\n\t\t\t\t\t- Parking\n\t\t\t\t\t- Free Wi-Fi\n\t\t\t\t\t- Tv\n\t\t\t\t\t- Swimming pool\n\n\t\t\t\t\t-Maximum no of Guest is 20 only.\n\n\t\t\t\t\t*Pets are not allowed.\n\n\t\t\t\t\tChoose:";
 
 	homestayMenu.addOption("Press 1 to Back");
 	homestayMenu.addOption("Press 2 to Exit");
@@ -1127,8 +1227,8 @@ void bookingMenu(guest user, booking buser, review reviews, payment payments, bo
 	makeBooking.addOption("Press 3 to Enter Number of night(s)");
 	makeBooking.addOption("Press 4 to Enter Guest Count");
 	makeBooking.addOption("Press 5 to Continue Payment");
-	makeBooking.addOption("Press 6 to Back to Book Menu");
-	makeBooking.addOption("Press 7 to Exit the System");
+	makeBooking.addOption("Press 6 to Cancel and Back to Book Menu");
+	makeBooking.addOption("Press 7 to Exit the Program");
 	makeBooking.footer = "\n\t\t\t\t\t-----------------------------------------\n\t\t\t\t\tSelect Option\n";
 
 	bool valid = true;
@@ -1202,7 +1302,7 @@ void bookingMenu(guest user, booking buser, review reviews, payment payments, bo
 
 					if (userInput == '0') {
 						cout << "\t\t\t\t\tBooking canceled.";
-						guestHome(user, buser, reviews, payments, bookings);
+						book(user, buser, reviews, payments, bookings);
 						return;
 					}
 				}
@@ -1277,6 +1377,7 @@ void viewBooking(guest user, booking bookings) //refer demo shop
 	bookingHistory.addOption("Press 2 to Select Ordering");
 	bookingHistory.addOption("Press 3 to Delete a Booking");
 	bookingHistory.addOption("Press 4 to Back to Homestay Menu");
+	//bookingHistory.addOption("Press 5 to Exit the Program");
 	bookingHistory.footer = "\n\t\t\t\t\t------------------------------------\n\t\t\t\t\tSelect Option\n";
 
 	while (1)
@@ -1291,16 +1392,16 @@ void viewBooking(guest user, booking bookings) //refer demo shop
 		if (displayBookHistory == "") {
 			displayBookHistory = "\n\t\t\t\tSearch Result:\n";
 			stringstream tmpHistory;
-			tmpHistory << setw(4) << "\t\t\t\tBooking ID" << "|" << setw(20) << "Check-In Date" << "|" << setw(20) 
+			tmpHistory << setw(4) << "\t\t\tBooking ID" << "|" << setw(20) << "Check-In Date" << "|" << setw(20) 
 				<< "Check-Out Date" << "|" << setw(15) << "No of Nights" << "|" << setw(15) << "Guest Count" << "|" << setw(15)
 				<< "Total Payment" << "|" << setw(25) << "Payment Date Time" << "|" << endl;
-			tmpHistory << "\t\t\t\t--------------------------------------------------------------------------------------------------------------------------------" << endl;
+			tmpHistory << "\t\t\t-------------------------------------------------------------------------------------------------------------------------------" << endl;
 
 
 			for (int i = 0; i < buser.size(); i++) {
-				tmpHistory << "\t\t\t\t" << setw(10) << buser[i].bookingID << "|" << setw(20) << buser[i].checkInDate << "|" << setw(20) 
+				tmpHistory << "\t\t\t" << setw(10) << buser[i].bookingID << "|" << setw(20) << buser[i].checkInDate << "|" << setw(20) 
 				<< buser[i].checkOutDate << "|" << setw(15) << buser[i].noOfNights << "|" << setw(15) << buser[i].guestCount << "|" << endl;
-				tmpHistory << "\t\t\t\t_______________________________________________________________________________________________________________________________" << endl;
+				tmpHistory << "\t\t\t_______________________________________________________________________________________________________________________________" << endl;
 			}
 
 			displayBookHistory += tmpHistory.str();
@@ -1320,20 +1421,29 @@ void viewBooking(guest user, booking bookings) //refer demo shop
 		case 3:
 			cout << "Insert Booking ID to Delete: ";
 			cin >> bookings.bookingID;
-			cout << "\t\t\t\t\tDelete your account? (y/n)";
+			bookings.bookingID == temp.bookingID;
+			bookings = temp;
+			_getch();
+			cout << "\t\t\tDelete your account? (y/n)";
 			char confirm;
 			confirm = _getch();
 
 			if (confirm == 'Y' || confirm == 'y') {
 				bookings = temp;
+				bookings.bookingID = temp.bookingID;
 				temp.removeBooking();
-				cout << "Booking Deleted. Press Enter Key to Continue...";
+				cout << "\t\t\tBooking Deleted. Press Enter Key to Continue... ";
 				_getch();
+			}
+			else
+			{
+				cout << "\n\t\t\tBooking Saved." << endl;
 			}
 			break;
 		case 4:
 			booking buser;
 			return book(user, buser, reviews, payments, bookings);
+			
 		}
 	}
 }
@@ -1343,11 +1453,11 @@ void contact(guest user, booking buser, review reviews, payment payments, bookin
 {
 	Menu adminContact;
 
-	adminContact.header = "\t\t\t\t\t---------- ADMIN CONTACT INFORMATION ----------\n\n"
+	adminContact.header = "\n\n\t\t\t\t\t---------- ADMIN CONTACT INFORMATION ----------\n\n"
 		"\t\t\t\t\t WhatsApp: 0196431714\n\n\t\t\t\t\t Call: 03-8456257\n\n\t\t\t\t\t Email:aaleya.aisya90@gmail.com\n";
 	adminContact.addOption("Press 1 to Go Back");
-	adminContact.addOption("Press 2 to Exit the System");
-	adminContact.footer = "\n\n\t\t\t\t\t-----------------------------------------------\n\t\t\t\t\tSelect Option";
+	adminContact.addOption("Press 2 to Exit the Program");
+	adminContact.footer = "\n\t\t\t\t\t-----------------------------------------------\n\t\t\t\t\tSelect Option";
 
 	while (1)
 	{
@@ -1371,8 +1481,8 @@ void reviewPage(guest user, review reviews)
 	reviewMenu.header = "\t\t\t\t\t----------- REVIEW MENU -----------\n\n\t\t\t\t\tChoose:";
 	reviewMenu.addOption("Press 1 to Make a Review");
 	reviewMenu.addOption("Press 2 to View Homestay Reviews");
-	//reviewMenu.addOption("My Reviews");
 	reviewMenu.addOption("Press 3 to Go Back to Booking");
+	reviewMenu.addOption("Press 4 to Exit the Program");
 	reviewMenu.footer = "\n\t\t\t\t\t-----------------------------------\n\t\t\t\t\tSelect Option\n";
 
 	while (1) {
@@ -1388,6 +1498,8 @@ void reviewPage(guest user, review reviews)
 		case 3:
 			return;
 			break;
+		case 4:
+			exit(0);
 		}
 	}
 }
@@ -1404,6 +1516,8 @@ void writeReview(guest user, review reviews)
 	writeReview.addOption("Press 2 to Enter rating ");
 	writeReview.addOption("Press 3 to Save Your Review ");
 	writeReview.addOption("Press 4 to Back to Review Menu");
+	writeReview.addOption("Press 5 to Exit the Program");
+
 	writeReview.footer = "\n\t\t\t\t\t----------------------------------\n\t\t\t\t\tSelect Option\n";
 
 	string tmpinput;
@@ -1445,6 +1559,8 @@ void writeReview(guest user, review reviews)
 		case 4:
 			return;
 			break;
+		case 5:
+			exit(0);
 		}
 	}
 }
@@ -1462,34 +1578,34 @@ void homestayReviews(guest user)
 
 	Menu viewReview;
 	viewReview.header = "\n\n\t\t\t\t\t------ HOMESTAY REVIEWS -------\n\n\t\t\t\t\tSearch for review: ";
-	viewReview.addOption("Press 1 to Enter Rating");
+	viewReview.addOption("Press 1 to View Homestay Reviews");
 	viewReview.addOption("Press 2 to Select Ordering");
-	viewReview.addOption("Press 3 to View Homestay Reviews");
-	viewReview.addOption("Press 4 to Back to profile");
+	viewReview.addOption("Press 3 to Back to Review Menu");
+	viewReview.addOption("Press 4 to Exit the Program");
 	viewReview.footer = "\n\t\t\t\t\t--------------\n\t\t\t\t\tSelect Option\n";
 
 	while (1)
 	{
 		if (ascending) {
-			viewReview.setValue(4, "Ascending");
+			viewReview.setValue(1, "Ascending");
 		}
 		else {
-			viewReview.setValue(4, "Descending");
+			viewReview.setValue(1, "Descending");
 		}
 
 		if (displayReview == "") {
 			displayReview = "\n\t\t\t\tResult:\n";
 			stringstream tmpReview;
-			tmpReview << "\n\t\t---------------------------------------------------------------------------------------------------------" << endl;
+			tmpReview << "\n\t\t+---------------------------------------------------------------------------------------------------------+" << endl;
 			tmpReview << setw(5) << "\t\t| Review ID" << "|" << setw(15) << "Guest ID"
 				<< "|" << setw(15) << "Ratings" << "|" << setw(40) << "Comments" << "|" << setw(20) << "Review Date" << " |" << endl;
-			tmpReview << "\t\t---------------------------------------------------------------------------------------------------------" << endl;
+			tmpReview << "\t\t+---------------------------------------------------------------------------------------------------------+" << endl;
 
 
 			for (int i = 0; i < reviews.size(); i++) {
 				tmpReview << "\t\t|" << setw(10) << reviews[i].reviewID << "|" << setw(15) << reviews[i].guestID
 					<< "|" << setw(15) << reviews[i].rating << "|" << setw(40) << reviews[i].comment << "|" << setw(20) << reviews[i].reviewDate << " |" << endl;
-				tmpReview << "\t\t_________________________________________________________________________________________________________" << endl;
+				tmpReview << "\t\t+_________________________________________________________________________________________________________+" << endl;
 			}
 
 			displayReview += tmpReview.str();
@@ -1500,23 +1616,19 @@ void homestayReviews(guest user)
 		switch (viewReview.prompt())
 		{
 		case 1:
-			cout << "Insert Rating: ";
-			cin >> rating;
-			viewReview.setValue(0, to_string(rating));
+			reviews = review::findReview(rating, comment, ascending);
+			displayReview = "";
 			break;
 		case 2:
 			ascending = !ascending;
 			break;
 		case 3:
-			reviews = review::findReview(rating, comment, ascending);
-			displayReview = "";
-			break;
-		case 4:
 			return;
+		case 4:
+			exit(0);
 		}
 	}
 }
-
 
 bool isNumeric(string input) {
 	for (int i = 0; i < input.length(); i++) {
